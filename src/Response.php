@@ -116,7 +116,7 @@ class Response
 
     /**
      * 获取当前输出代理
-     * @return \swiftphp\core\http\IOutput
+     * @return IOutput
      */
     public function getOutput()
     {
