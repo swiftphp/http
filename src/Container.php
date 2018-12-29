@@ -128,7 +128,12 @@ class Container implements IRunnable
                 //如果模板文件存在，则按模板输出
                 $tempFile=$this->m_errorTemplate;
                 if(is_file($this->m_errorTemplate)){
-                    echo file_get_contents($tempFile);
+                    $ext=strtolower(pathinfo($this->m_errorTemplate,PATHINFO_EXTENSION));
+                    if($ext=="php"){
+                        require_once $tempFile;
+                    }else{
+                        echo file_get_contents($tempFile);
+                    }
                 }else{
                     echo $msg;
                 }
