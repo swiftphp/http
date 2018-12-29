@@ -125,6 +125,11 @@ class Container implements IRunnable
                     }catch (\Exception $e){}
                 }
 
+                //发送500头部
+                if(!headers_sent()){
+                    header("HTTP/1.1 500 Internal Server Error");
+                }
+
                 //如果模板文件存在，则按模板输出
                 $tempFile=$this->m_errorTemplate;
                 if(is_file($this->m_errorTemplate)){
