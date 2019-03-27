@@ -97,6 +97,11 @@ class Container implements IRunnable
      */
     public function run()
     {
+        //非debug时禁止错误输出
+        if(!$this->m_debug){
+            error_reporting(0);
+        }
+
         try{
 
             //初始化上下文
