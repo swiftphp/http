@@ -169,7 +169,8 @@ class Container implements IRunnable
         $req->headers=[];
         foreach ($_SERVER as $name => $value){
             if(strpos($name, "HTTP_")===0){
-                $key=str_replace(" ", "-", ucwords(str_replace("_", " ", substr(strtolower($name), 5))));
+                //$key=str_replace(" ", "-", ucwords(str_replace("_", " ", substr(strtolower($name), 5))));
+                $key=substr($name, 5);
                 $req->headers[$key]=$value;
             }
         }
