@@ -93,6 +93,22 @@ class Container implements IRunnable
     }
 
     /**
+     * 添加过滤器
+     * @param IFilter $filter
+     */
+    public function addFilter(IFilter $filter){
+        $this->m_filters[]=$filter;
+    }
+
+    /**
+     * 添加监听器
+     * @param IListener $listener
+     */
+    public function addListener(IListener $listener){
+        $this->m_listeners[]=$listener;
+    }
+
+    /**
      *容器执行主入口
      */
     public function run()
@@ -118,40 +134,19 @@ class Container implements IRunnable
 
             //结束监听
             $this->listenAfter();
-        }catch (\Exception $ex){
+        }catch (\Exception $e){
             if(!$this->m_debug){
-                //消息
-                $msg=$ex->getCode().":".$ex->getMessage()."\r\n".$ex->getTraceAsString();
-
-                //记录到日志
-                if(!empty($this->m_logger)){
-                    try{
-                        $this->m_logger->log($msg,"exception","ex");
-                    }catch (\Exception $e){}
-                }
-
-                //发送500头部
-                if(!headers_sent()){
-                    header("HTTP/1.1 500 Internal Server Error");
-                }
-
-                //如果模板文件存在，则按模板输出
-                $tempFile=$this->m_errorTemplate;
-                if(is_file($this->m_errorTemplate)){
-                    $ext=strtolower(pathinfo($this->m_errorTemplate,PATHINFO_EXTENSION));
-                    if($ext=="php"){
-                        require_once $tempFile;
-                    }else{
-                        echo file_get_contents($tempFile);
-                    }
-                }else{
-                    echo $msg;
-                }
-
-                //退出
+                $this->handleExceptionOrError($e);
                 exit;
             }else{
-                throw $ex;
+                throw $e;
+            }
+        }catch (\Error $e){
+            if(!$this->m_debug){
+                $this->handleExceptionOrError($e);
+                exit;
+            }else{
+                throw $e;
             }
         }
     }
@@ -272,6 +267,41 @@ class Container implements IRunnable
             if(!empty($out)){
                 $out->output();
             }
+        }
+    }
+
+    /**
+     * 异常或错误处理
+     * @param \Throwable $throw
+     */
+    private function handleExceptionOrError(\Throwable $throw){
+        //消息
+        $msg=$throw->getCode().":".$throw->getMessage()."\r\n".$throw->getTraceAsString();
+
+        //记录到日志
+        if(!empty($this->m_logger)){
+            try{
+                $type=($throw instanceof \Exception)?"ex":"err";
+                $this->m_logger->log($msg,$type,$type=="ex"?"exception":"error");
+            }catch (\Exception $e){}
+        }
+
+        //发送500头部
+        if(!headers_sent()){
+            header("HTTP/1.1 500 Internal Server Error");
+        }
+
+        //如果模板文件存在，则按模板输出
+        $tempFile=$this->m_errorTemplate;
+        if(is_file($this->m_errorTemplate)){
+            $ext=strtolower(pathinfo($this->m_errorTemplate,PATHINFO_EXTENSION));
+            if($ext=="php"){
+                require_once $tempFile;
+            }else{
+                echo file_get_contents($tempFile);
+            }
+        }else{
+            echo $msg;
         }
     }
 }
