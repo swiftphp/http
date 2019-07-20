@@ -32,6 +32,12 @@ class Response
      * @var array
      */
     protected $m_headers = [];
+    
+    /**
+     * 输出cookies
+     * @var Cookie[]
+     */
+    protected $m_cookies=[];
 
     /**
      * 输出代理
@@ -132,6 +138,22 @@ class Response
         $this->m_output=$value;
     }
 
+    /**
+     * 获取所有的输出cookies
+     * @return \swiftphp\http\Cookie[]
+     */
+    public function getCookies(){
+        return $this->m_cookies;
+    }
+    
+    /**
+     * 添加输出cookie
+     * @param Cookie $cookie
+     */
+    public function addCookie(Cookie $cookie){
+        $this->m_cookies=$cookie;
+    }
+    
     /**
      * 添加输出头部
      * @param string $name

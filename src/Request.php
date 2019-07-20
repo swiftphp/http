@@ -57,12 +57,6 @@ class Request
     public $port=80;
 
     /**
-     * 请求头部
-     * @var string
-     */
-    public $headers=[];
-
-    /**
      * 请求URI
      * @var string
      */
@@ -79,17 +73,75 @@ class Request
      * @var string
      */
     public $post=[];
+    
+    /**
+     * 请求头部
+     * @var string
+     */
+    public $headers=[];
+    
+    /**
+     * cookie
+     * @var array
+     */
+    public $cookies=[];
 
     /**
      * 获取请求参数(搜索顺序:get,post)
      * @param string $name
+     * @param string $default
+     * @deprecated
      */
     public function getRequestParameter($name,$default="")
     {
-        if(array_key_exists($name, $this->get))
+        if(array_key_exists($name, $this->get)){
             return $this->get[$name];
-        else if(array_key_exists($name, $this->post))
+        }else if(array_key_exists($name, $this->post)){
             return $this->post[$name];
+        }
         return $default;
     }
+    
+    /**
+     * 获取请求参数(搜索顺序:get,post)
+     * @param string $name
+     * @param string $default
+     */
+    public function getParameter($name,$default="")
+    {
+        if(array_key_exists($name, $this->get)){
+            return $this->get[$name];
+        }else if(array_key_exists($name, $this->post)){
+            return $this->post[$name];
+        }
+        return $default;
+    }
+    
+    /**
+     * 获取GET请求参数
+     * @param string $name
+     * @param string $default
+     * @return string
+     */
+    public function getGetParameter($name,$default="")
+    {
+        if(array_key_exists($name, $this->get)){
+            return $this->get[$name];
+        }
+        return $default;
+    }
+    
+    /**
+     * 获取POST请求参数
+     * @param string $name
+     * @param string $default
+     * @return string
+     */
+    public function getPostParameter($name,$default="")
+    {
+        if(array_key_exists($name, $this->post)){
+            return $this->get[$name];
+        }
+        return $default;
+    }    
 }

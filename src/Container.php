@@ -192,6 +192,7 @@ class Container implements IRunnable
         $req->uri=$_SERVER["REQUEST_URI"];
         $req->get=$_GET;
         $req->post=$_POST;
+        $req->cookies=$_COOKIE;
 
         //response
         $rsp=new Response();
@@ -259,6 +260,13 @@ class Container implements IRunnable
                     }else{
                         header($name.":".$value);
                     }
+                }
+            }
+            
+            //输出cookie
+            if(!empty($rsp->getCookies())){
+                foreach ($rsp->getCookies() as $cookie){
+                    setcookie($cookie->name,$cookie->value,$cookie->expire,$cookie->path,$cookie->domain,$cookie->secure);
                 }
             }
 
