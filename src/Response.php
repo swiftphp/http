@@ -151,7 +151,7 @@ class Response
      * @param Cookie $cookie
      */
     public function addCookie(Cookie $cookie){
-        $this->m_cookies=$cookie;
+        $this->m_cookies[]=$cookie;
     }
     
     /**
